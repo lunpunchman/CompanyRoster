@@ -1,0 +1,47 @@
+Name	Issue	Company	iMis	Invoice Amount	Invoice Contact Email	Product code
+BA.org 200 x 200	BA.org - February 2016	Cablevey Conveyors	000137050	$540.00	karl.seidel@cablevey.com	1200web2016
+BA.org 200 x 200	BA.org - February 2016	Cargill	000136773	$510.00	rich_ellis@cargill.com	1200web2016
+BA.org mobile	BA.org - February 2016	Grandstand Glassware • Apparel • Promotional	000136246	$675.00	lesliec@egrandstand.com	1200web2016
+BA.org 200 x 200	BA.org - March 2016	Cargill	000136773	$510.00	rich_ellis@cargill.com	1200web2016
+BA.org 200 x 200	BA.org - March 2016	Muller LCS	900153232	$570.00	heather@aducomm.com	1200web2016
+BA.org 200 x 200	BA.org - March 2016	Ningbo Lehui Food Machinery C., Ltd.	900116421	$3,330.00	sandra@lehui.com	1200web2016
+BA.org 200 x 200	BA.org - March 2016	Southern Brewers Conference LLC 	900157917	$1,800.00	emily@southernbrewersconference.com	1200web2016
+BA.org 200 x 200	BA.org - April 2016	Atlas Copco Compressors LLC	900135771	$540.00	holly.boutot@us.atlascopco.com	1200web2016
+BA.org 200 x 200	BA.org - April 2016	Cargill	000136773	$510.00	rich_ellis@cargill.com	1200web2016
+BA.org mobile	BA.org - April 2016	Industrial Test Systems	900123401	$675.00	mmcbride@sensafe.com	1200web2016
+BA.org 200 x 200	BA.org - April 2016	Muller LCS	900153232	$570.00	heather@aducomm.com	1200web2016
+BA.org 200 x 200	BA.org - April 2016	Thielmann-Portinox, S.A.	000129284	$540.00	efernandez@portinox.com	1200web2016
+BA.org 200 x 200	BA.org - May 2016	Atlas Copco Compressors LLC	900135771	$540.00	holly.boutot@us.atlascopco.com	1200web2016
+BA.org 200 x 200	BA.org - May 2016	Cargill	000136773	$510.00	rich_ellis@cargill.com	1200web2016
+BA.org 200 x 200	BA.org - May 2016	C.E.M. Srl	900155917	$600.00	info@cem-milano.com	1200web2016
+BA.org mobile	BA.org - May 2016	Industrial Test Systems	900123401	$675.00	mmcbride@sensafe.com	1200web2016
+BA.org 200 x 200	BA.org - May 2016	Muller LCS	900153232	$570.00	heather@aducomm.com	1200web2016
+BA.org 200 x 200	BA.org - May 2016	Thielmann-Portinox, S.A.	000129284	$540.00	efernandez@portinox.com	1200web2016
+BA.org 200 x 200	BA.org - May 2016	Tinley Park Economic Development	9000113598	$750.00	ibaker@tinleypark.org	1200web2016
+BA.org mobile	BA.org - May 2016	Zeon 	000136058	$675.00	DFlores@zeon.com	1200web2016
+BA.org 200 x 200	BA.org - June 2016	Cargill	000136773	$510.00	rich_ellis@cargill.com	1200web2016
+BA.org mobile	BA.org - June 2016	City of Portsmouth Virginia	900179463	$750.00	richard@arengee.com	1200web2016
+BA.org mobile	BA.org - June 2016	Industrial Test Systems	900123401	$675.00	mmcbride@sensafe.com	1200web2016
+BA.org mobile	BA.org - June 2016	Ingersoll Rand	900112163	$675.00	ap@phase3mc.com	1200web2016
+BA.org 200 x 200	BA.org - June 2016	Southern Brewers Conference LLC 	900157917	$540.00	emily@southernbrewersconference.com	1200web2016
+BA.org 200 x 200	BA.org - June 2016	Thielmann-Portinox, S.A.	000129284	$540.00	efernandez@portinox.com	1200web2016
+BA.org mobile	BA.org - June 2016	Zeon 	000136058	$675.00	DFlores@zeon.com	1200web2016
+AHA.org 200 x 200	AHA.org - March 2016	Amazon	900179729	$2,175.00	calvie@amazon.com	1100web2016
+AHA.org mobile	AHA.org - April 2016	Growler Chill	900161894	$750.00	tonia@growlerchill.com	1100web2016
+AHA.org 200 x 200	AHA.org - May 2016	Gotta Brew, LLC	900098857	$540.00	Steve@gotta-brew.com	1100web2016
+AHA.org mobile	AHA.org - May 2016	Industrial Test Systems	900123401	$675.00	mmcbride@sensafe.com	1100web2016
+AHA.org 200 x 200	AHA.org - June 2016	Gotta Brew, LLC	900098857	$540.00	Steve@gotta-brew.com	1100web2016
+CB.com mobile	CB.com  - March 2016	Amazon	900179729	$2,175.00	calvie@amazon.com	1500web2016
+CB.com mobile	CB.com  - April 2016	Growler Chill	900161894	$750.00	tonia@growlerchill.com	1500web2016
+CB.com 200 x 200	CB.com  - May 2016	Uinta Brewing Company	000134854	$540.00 	lberk@uintabrewing.com	1500web2016
+CB.com 200 x 200	CB.com  - June 2016	Uinta Brewing Company	000134854	$540.00 	lberk@uintabrewing.com	1500web2016
+AHA Forum	AHA.org - March 2016	Amazon	900179729	$2,175.00	calvie@amazon.com	1100web2016
+AHA Forum	AHA.org - April 2016	Muntons Malted Ingredients	000136081	$540.00 	jeremy.jacobson@muntons-inc.com	1100web2016
+AHA Forum	AHA.org - June 2016	Muntons Malted Ingredients	000136081	$540.00 	jeremy.jacobson@muntons-inc.com	1100web2016
+AHA Forum	AHA.org - June 2016	Siebel Institute	000016738	$570.00 	klemcke@siebleinstitute.com	1100web2016
+AHA Forum	AHA.org - June 2016	Tel-Tru Manufacturing Co.	900096059	$540.00 	katichenot@gsoptics.com	1100web2016
+AHA What's Brewing	AHA.org - March 2016	National Honey Board	000138476	$400.00 	ccepicky@thearlandgroup.com	1100web2016
+AHA What's Brewing	AHA.org - March 2016	New Age Industries	900092057	$380.00 	aphy@newageindustries.com	1100web2016
+AHA What's Brewing	AHA.org - May 2016	New Age Industries	900092057	$380.00 	aphy@newageindustries.com	1100web2016
+AHA What's Brewing	AHA.org - May 2016	National Honey Board	000138476	$400.00 	ccepicky@thearlandgroup.com	1100web2016
+AHA What's Brewing	AHA.org - June 2016	New Age Industries	900092057	$380.00 	aphy@newageindustries.com	1100web2016
