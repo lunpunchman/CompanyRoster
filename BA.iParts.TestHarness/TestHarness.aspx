@@ -101,20 +101,26 @@
                 //doc.on("click", ".btnAddContact", function () { return showInvitationModal(); });
                 doc.on("click", ".btnAddContact", function () { return showInvitationModal(); });
                 doc.on("shown.bs.modal", ".invitationModal", initModal);
-                doc.on("hidden.bs.modal", ".invitationModal", hideModal);
+                doc.on("hidden.bs.modal", ".invitationModal", function () { return cancelModal(jQuery(".invitationModal")); });
                 doc.on("click", ".btnMangeRole", function () { return getRelationships() });
                 doc.on("click", ".btnMoveEmp", function () { return getCompanyList() });
                 doc.on("click", ".btnSavleRole", btnSaveRoleClick);
                 doc.on("shown.bs.modal", ".roleModal", initModal);
-                doc.on("hidden.bs.modal", ".roleModal", hideModal);
+                doc.on("hidden.bs.modal", ".roleModal", function () { return cancelModal(jQuery(".roleModal")); });
                 doc.on("shown.bs.modal", ".levelModal", initModal);
-                doc.on("hidden.bs.modal", ".levelModal", hideModal)
+                doc.on("hidden.bs.modal", ".levelModal", function () { return cancelModal(jQuery(".levelModal")); });
                 doc.on("click", ".fullName", function (e) { getEmployeeInfo(e, jQuery(this)); });
                 doc.on("click", ".btnDeleteRoster", function () { return confirmDeleteRoster(jQuery(this)); });
-                doc.on("click", ".btnSaveLocation", showLevelConfirmModal);
+                doc.on("click", ".btnSaveLocation", showLevelConfirmModal); 
+                doc.on("click", ".btnMoveRelationships", function () { return moveEmployee(1); });
+                doc.on("click", ".btnDeleteRelationships", function () { return moveEmployee(0); });
                 doc.on("shown.bs.modal", ".levelConfirmModal", initModal);
-               
+                doc.on("click", ".btnCancelLevel", function () { return cancelModal(jQuery(".levelModal")); });
                 doc.on("click", ".btnCancelLevelConfirm", function () { return cancelModal(jQuery(".levelConfirmModal")); });
+
+                doc.on("shown.bs.modal", ".masterConfirmModal", initModal);
+                doc.on("hidden.bs.modal", ".masterConfirmModal", hideModal);
+                doc.on("click", ".btnDone", hideModal);
             }
         }
         catch (err) { displayError(err); }
@@ -152,6 +158,11 @@
         catch (err) { displayError(err); }
     }
 
+    function showModal(modal) {
+        modal.appendTo("body").modal("show"); //only for IE11 to work properly in iMIS
+        modal.css("overflow-y", "hidden"); //only for IE11 to work properly in iMIS
+    }
+
     function cancelModal(modal) {
         try {
             // var result = getRelationships(selectedId);
@@ -159,6 +170,10 @@
             //jQuery(".modal-content").addClass("ba-hidden");
             //var modal = jQuery(".levelConfirmModal");
             modal.modal("hide"); //only for IE11 to work properly in iMIS
+            jQuery(".divRStatus").html("");
+            jQuery(".cblist").empty();
+            if (modal.selector != ".levelConfirmModal")
+                jQuery(".cblLevel").empty();
         }
         catch (err) { displayError(err); }
     }
@@ -219,7 +234,7 @@
                     contentType: "application/json; charset=utf-8",
                     //data: "{ 'IMIS_ID': 900045199, 'CO_IMIS_ID': 900045200 }",
                     data: "{ 'IMIS_ID': '" + jQuery(".txtSelectedId").val() + "', " +
-                            "'CO_IMIS_ID': '" + company.IMIS_ID + "' }",
+                            "'CO_IMIS_ID': '" + jQuery(".txtSelectedParentId").val() + "' }",
                     success: function (result) {
                         //alert("Got Relaiontships");
                         resultData = JSON.parse(result.d);
@@ -236,38 +251,51 @@
         return false;
     }
 
+    function GetRelationshipCount(IMIS_ID, RelationType) {
+        try {
+            var dataJson = { IMIS_ID: jQuery(".txtSelectedParentId").val(), Relationships: RelationType }
+            var dataJsonString = JSON.stringify(dataJson);
+            jQuery.ajax({
+                url: jQuery(".txtWSPath").val() + "/GetRelationshipCount",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                data: dataJsonString,
+                success: function (result) {
+                    return jQuery.parseJSON(result.d);
+                },
+                error: function (err) {
+                    displayAjaxError(err);
+                }
+            });
+        }
+        catch (err) { displayError(err); }
+        return 0;
+    }
+
+
     function btnSaveRoleClick() {
         try {
-            
             var company = jQuery.parseJSON(jQuery(".txtCompany").val());
-            //alert("company");
             var container = jQuery(".cblist");
-            //alert("container");
             var values = jQuery('input:checkbox:checked.chkRoles').map(function () {
                 return this.id;
             }).get();
-            //alert("values");
             var relationships = JSON.stringify(values);
-            var dataJson = { IMIS_ID: jQuery(".txtSelectedId").val(), CO_IMIS_ID: company.IMIS_ID, Relationships: values, LoginID: jQuery(".txtLoginID").val() }
+            var dataJson = { IMIS_ID: jQuery(".txtSelectedId").val(), CO_IMIS_ID: jQuery(".txtSelectedParentId").val(), Relationships: values, LoginID: jQuery(".txtLoginID").val() }
             var dataJsonString = JSON.stringify(dataJson);
-            //alert(dataJsonString);
             jQuery.ajax({
                 url: jQuery(".txtWSPath").val() + "/SaveRelationshipInfo",
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
-                //data: "{ 'IMIS_ID': 900045199, 'CO_IMIS_ID': 900045200 }",
                 data: dataJsonString,
                 success: function (result) {
-                    //alert("Hello World");
-                    updateRStatus(result);
+                    updateRStatus(jQuery.parseJSON(result.d));
                 },
                 error: function (err) {
-                    //alert("Error World");
                     displayAjaxError(err);
                 }
             });
-            //clear email and status
-            jQuery(".divRStatus").html("");
+
         }
         catch (err) { displayError(err); }
         //alert("Return World");
@@ -437,7 +465,7 @@
 
     function updateRStatus(result) {
         try {
-            jQuery(".divRStatus").html(jQuery.parseJSON(result.d));
+            jQuery(".divRStatus").html(result);
         }
         catch (err) { displayError(err); }
     }
@@ -638,7 +666,31 @@
     }
 
     function changeSelectedLevel() {
-        jQuery(".txtSelectedParentId").val(jQuery(".selectLevel")[0].value);
+        jQuery(".txtNewParentId").val(jQuery(".selectLevel")[0].value);
+    }
+
+    function moveEmployee(MoveRelationships) {
+        try {
+            var dataJson = { IMIS_ID: jQuery(".txtSelectedId").val(), CO_IMIS_ID: jQuery(".txtNewParentId").val(), LoginID: jQuery(".txtLoginID").val(), Move: MoveRelationships}
+            var dataJsonString = JSON.stringify(dataJson);
+            jQuery.ajax({
+                url: jQuery(".txtWSPath").val() + "/MoveEmployee",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: dataJsonString,
+                success: function (result) {
+                    jQuery(".divConfirmStatus").html(jQuery.parseJSON(result.d));
+                    cancelModal(jQuery(".levelModal"));
+                    cancelModal(jQuery(".levelConfirmModal"));
+                    showModal(jQuery(".masterConfirmModal"));
+                },
+                error: function (err) {
+                    displayAjaxError(err);
+                }
+            });
+        }
+        catch (err) { displayError(err); }
+        return false;
     }
 </script>
 
@@ -900,7 +952,25 @@
                                 <asp:Button ID="btnCancelLevelConfirm" CssClass="btnCancelLevelConfirm TextButton TextButtonWithImage" OnClientClick="return false;" Text="Cancel" runat="server" />
                             </div>
                         </div>
-                        <div id="div1" class="divLStatus full-width" runat="server"></div>
+                        <div id="divLCStatus" class="divLCStatus full-width" runat="server"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="masterConfirmModal" class="masterConfirmModal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body role-modal-body">
+                    <div class="well">
+                        <p><div id="divConfirmStatus" class="divConfirmStatus full-width" runat="server"></div></p>
+                        <div class="row">
+                            <div class="col-lg-12"> 
+                                <asp:Button ID="btnDone" CssClass="btnDone TextButton TextButtonWithImage" OnClientClick="return false;" Text="Done" runat="server" />
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -913,7 +983,8 @@
 <asp:TextBox ID="txtErrors" CssClass="txtErrors ba-hidden" runat="server"></asp:TextBox> <!--BEW DEBUG ONLY (keep it ba-hidden when not in use)-->
 <asp:TextBox ID="txtItemCount" CssClass="txtItemCount ba-hidden" runat="server"></asp:TextBox>
 <asp:TextBox ID="txtSelectedId" CssClass="txtSelectedId ba-hidden" runat="server"></asp:TextBox>
-<asp:TextBox ID="txtSelectedParentId" CssClass="txtSelectedParentId" runat="server"></asp:TextBox>
+<asp:TextBox ID="txtSelectedParentId" CssClass="txtSelectedParentId ba-hidden" runat="server"></asp:TextBox>
+<asp:TextBox ID="txtNewParentId" CssClass="txtNewParentId ba-hidden" runat="server"></asp:TextBox>
 <asp:TextBox ID="txtIsCompany" CssClass="txtIsCompany ba-hidden" runat="server"></asp:TextBox>
 <!--</BA:ReplaceIPartASCX>-->
 

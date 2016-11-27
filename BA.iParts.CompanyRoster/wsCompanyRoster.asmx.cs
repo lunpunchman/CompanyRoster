@@ -83,5 +83,31 @@ namespace BA.iParts.CompanyRoster.WebServices
                 return JsonConvert.SerializeObject(ex.Message);
             }
         }
+
+        [WebMethod]
+        public string GetRelationshipCount(string IMIS_ID, string RELATION_TYPE)
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(CompanyRosterShared.GetRelationshipCount(IMIS_ID, RELATION_TYPE));
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(ex.Message);
+            }
+        }
+
+        [WebMethod]
+        public string MoveEmployee(string IMIS_ID, string CO_IMIS_ID, string LoginID, int Move)
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(CompanyRosterShared.MoveEmployee(IMIS_ID, CO_IMIS_ID, LoginID, Move));
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(ex.Message);
+            }
+        }
     }
 }

@@ -216,8 +216,12 @@ namespace BA.iParts.CompanyRoster
             cmd.Parameters.AddWithValue("@TARGET_ID", IMIS_ID);
             cmd.Parameters.AddWithValue("@ID", CO_IMIS_ID);
             cmd.Parameters.AddWithValue("@Relationships", dt);
-            cmd.Parameters.AddWithValue("@SentByLoginID", LoginID);
-            SQL.ExecuteSPTable(cmd);
+            cmd.Parameters.AddWithValue("@LoginID", LoginID);
+            result = SQL.ExecuteSPScalar(cmd).ToString();
+
+            int number;
+            if (Int32.TryParse(result, out number))
+                result = "Save Successful";
             return result;
         }
 
@@ -397,6 +401,41 @@ namespace BA.iParts.CompanyRoster
             {
                 Shared.LogError(ex);
             }
+        }
+
+        public static int GetRelationshipCount(string IMIS_ID, string RELATION_TYPE)
+        {
+            try
+            {
+                SqlCommand cmd = new SqlCommand("spba_GetRelationshipCount");
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", IMIS_ID);
+                cmd.Parameters.AddWithValue("@RELATION_TYPE", RELATION_TYPE);
+                return Convert.ToInt32(SQL.ExecuteSPScalar(cmd));
+            }
+            catch (Exception ex)
+            {
+                Shared.LogError(ex);
+            }
+            return 0;
+        }
+
+        public static string MoveEmployee(string IMIS_ID, string CO_IMIS_ID, string LoginID, int Move)
+        {
+            string result = "Relationships Saved";
+            SqlCommand cmd = new SqlCommand("spba_MoveEmployee");
+            cmd.CommandType = CommandType.StoredProcedure;
+            //DataTable dt = SQL.ExecuteSPTable(cmd);
+            cmd.Parameters.AddWithValue("@TARGET_ID", IMIS_ID);
+            cmd.Parameters.AddWithValue("@ID", CO_IMIS_ID);
+            cmd.Parameters.AddWithValue("@LoginID", LoginID);
+            cmd.Parameters.AddWithValue("@MoveRelationships", Move);
+            result = SQL.ExecuteSPScalar(cmd).ToString();
+
+            int number;
+            if (Int32.TryParse(result, out number))
+                result = "Success!";
+            return result;
         }
     }
 }

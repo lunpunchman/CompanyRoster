@@ -166,13 +166,13 @@ namespace BA.iParts.TestHarness {
         protected global::System.Web.UI.WebControls.Button btnCancelLevelConfirm;
         
         /// <summary>
-        /// div1 control.
+        /// divLCStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl div1;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divLCStatus;
         
         /// <summary>
         /// txtWSPath control.
@@ -245,6 +245,15 @@ namespace BA.iParts.TestHarness {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSelectedParentId;
+        
+        /// <summary>
+        /// txtNewParentId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNewParentId;
         
         /// <summary>
         /// txtIsCompany control.
