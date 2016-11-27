@@ -425,7 +425,7 @@ namespace BA.iParts.CompanyRoster
             string result = "Relationships Saved";
             SqlCommand cmd = new SqlCommand("spba_MoveEmployee");
             cmd.CommandType = CommandType.StoredProcedure;
-            //DataTable dt = SQL.ExecuteSPTable(cmd);
+            //DataTable dt = SQL.ExecuteSPTable(cmd); //Test
             cmd.Parameters.AddWithValue("@TARGET_ID", IMIS_ID);
             cmd.Parameters.AddWithValue("@ID", CO_IMIS_ID);
             cmd.Parameters.AddWithValue("@LoginID", LoginID);
