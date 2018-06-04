@@ -1,0 +1,11 @@
+﻿CREATE PROC spba_GetParentCompany
+(
+@ID varchar(10)
+)
+AS
+SELECT n1.ID, n1.COMPANY, n1.MEMBER_TYPE, n1.CITY, n1.STATE_PROVINCE, n2.ID AS CODE_ID
+FROM Name n1
+JOIN Name n2 ON n1.ID=n2.CO_ID
+WHERE n2.ID=@ID
+
+GRANT EXEC ON spba_GetParentCompany TO iMIS_Prod_RO

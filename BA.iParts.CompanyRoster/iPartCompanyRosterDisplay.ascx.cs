@@ -132,6 +132,7 @@ namespace BA.iParts.CompanyRoster
         {
             try
             {
+                Shared.LogError(new Exception("Company Roster Test Exception"));
                 /* BEW IMPORTANT! MANUALLY COPY anything from iPart{xxx}Display.PageLoad() into the Page_Load event of TestHarness.aspx.cs
                  * You will also have to make some other manual modifications such as: 
                  * Replace the FindControl("ControlID") routines from the iPart{xxx}Display.ascx.cs with GetControl(Page, "ControlID") in TestHarness.aspx.cs.
@@ -151,9 +152,9 @@ namespace BA.iParts.CompanyRoster
 
 
                 //}
-
                 company = Shared.GetParentCompany(AppContext.CurrentIdentity.LoginIdentity);
                 company.Email = "info@brewersassociation.org"; //This is a lame shortcut in naming. We're always sending the email FROM info@brewersassociation.org instead of the company itself
+                ((TextBox)FindControl("txtRosterCount")).Text = CompanyRosterShared.GetRosterCount(company.IMIS_ID);
                 ((TextBox)FindControl("txtLoginID")).Text = AppContext.CurrentIdentity.LoginUserId;
                 LoginId = AppContext.CurrentIdentity.LoginUserId;
                 ((TextBox)FindControl("txtCompany")).Text = JsonConvert.SerializeObject(company);
@@ -161,10 +162,11 @@ namespace BA.iParts.CompanyRoster
                
                 EntityManager entityManager = new EntityManager();
                 MembershipManager membershipManager = new MembershipManager(entityManager);
-                CoAdmin = membershipManager.UpdatePermitted(company.IMIS_ID).ToString().ToLower();   
-                //CoAdmin = AppContext.CurrentPrincipal.IsInRole("CompanyAdministrator").ToString().ToLower();
+                CoAdmin = membershipManager.UpdatePermitted(company.IMIS_ID).ToString().ToLower();
 
-                ((TextBox)FindControl("txtIsCompanyAdmin")).Text = CoAdmin;
+               //CoAdmin = AppContext.CurrentPrincipal.IsInRole("CompanyAdministrator").ToString().ToLower();
+
+               ((TextBox)FindControl("txtIsCompanyAdmin")).Text = CoAdmin;
                 isCoAdmin = Convert.ToBoolean(CoAdmin);
  
                 //Load custom styles and scripts here
@@ -461,19 +463,19 @@ namespace BA.iParts.CompanyRoster
             return String.Empty;
         }
 
-        protected void btnRole_Click(object sender, EventArgs e)
-        {
+        //protected void btnRole_Click(object sender, EventArgs e)
+        //{
 
-            TreeListDataItem item = rtlRoster.SelectedItems[0];
-            DataTable dt = CompanyRosterShared.GetRosterRelationships("900045199", company.IMIS_ID);
-            foreach (DataRow row in dt.Rows)
-            {
-                ListItem newItem = new ListItem(row["DESCRIPTION"].ToString(), row["RELATION_TYPE"].ToString());
-                ((CheckBoxList)FindControl("chklRoles")).Items.Add(newItem);
+        //    TreeListDataItem item = rtlRoster.SelectedItems[0];
+        //    DataTable dt = CompanyRosterShared.GetRosterRelationships("900045199", company.IMIS_ID);
+        //    foreach (DataRow row in dt.Rows)
+        //    {
+        //        ListItem newItem = new ListItem(row["DESCRIPTION"].ToString(), row["RELATION_TYPE"].ToString());
+        //        ((CheckBoxList)FindControl("chklRoles")).Items.Add(newItem);
 
 
-            }
-        }
+        //    }
+        //}
 
         //BEW DEBUG ONLY
         private void DisplayError(string MethodName, string Message)

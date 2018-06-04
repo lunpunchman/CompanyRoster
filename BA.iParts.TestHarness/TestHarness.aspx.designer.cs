@@ -175,6 +175,24 @@ namespace BA.iParts.TestHarness {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divLCStatus;
         
         /// <summary>
+        /// divConfirmStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divConfirmStatus;
+        
+        /// <summary>
+        /// btnDone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnDone;
+        
+        /// <summary>
         /// txtWSPath control.
         /// </summary>
         /// <remarks>
@@ -263,5 +281,14 @@ namespace BA.iParts.TestHarness {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtIsCompany;
+        
+        /// <summary>
+        /// txtRosterCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtRosterCount;
     }
 }

@@ -32,6 +32,7 @@ namespace BA.iParts.CompanyRoster
             StringBuilder sbResults = new StringBuilder();
             try
             {
+                ToEmailAddresses = ToEmailAddresses.Replace(" ", String.Empty); //MIKE: Trimming email addresses here because spaces are causing issues
                 if (ToEmailAddresses.Trim() == String.Empty)
                 {
                     sbResults.Append("Please specify one or more email addresses to search for, separating each by a semi-colon.");
@@ -225,6 +226,14 @@ namespace BA.iParts.CompanyRoster
             return result;
         }
 
+        public static string GetRosterCount(string IMIS_ID)
+        {
+            SqlCommand cmd = new SqlCommand("spba_GetRosterCount");
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IMIS_ID", IMIS_ID);
+            return SQL.ExecuteSPScalar(cmd);
+        }
+
         public static DataTable GetCompanyRoster(string IMIS_ID)
         {
             SqlCommand cmd = new SqlCommand("spba_GetCompanyRoster");
@@ -411,6 +420,7 @@ namespace BA.iParts.CompanyRoster
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ID", IMIS_ID);
                 cmd.Parameters.AddWithValue("@RELATION_TYPE", RELATION_TYPE);
+
                 return Convert.ToInt32(SQL.ExecuteSPScalar(cmd));
             }
             catch (Exception ex)
@@ -418,6 +428,39 @@ namespace BA.iParts.CompanyRoster
                 Shared.LogError(ex);
             }
             return 0;
+        }
+
+        public static RelationshipCount GetRelationshipCount(string IMIS_ID)
+        {
+            try
+            {
+                SqlCommand cmd = new SqlCommand("spba_GetRelationshipCount");
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", IMIS_ID);
+                cmd.Parameters.AddWithValue("@RELATION_TYPE", "");
+                return SQL.Modelize<RelationshipCount>(SQL.ExecuteSPTable(cmd)).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Shared.LogError(ex);
+                return new RelationshipCount();
+            }
+        }
+
+        public static List<Relationship> GetCompanyRelationships(string IMIS_ID)
+        {
+            try
+            {
+                SqlCommand cmd = new SqlCommand("spba_GetCompanyRelationships");
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", IMIS_ID);
+                return SQL.Modelize<Relationship>(SQL.ExecuteSPTable(cmd));
+            }
+            catch (Exception ex)
+            {
+                Shared.LogError(ex);
+                return new List<Relationship>();
+            }
         }
 
         public static string MoveEmployee(string IMIS_ID, string CO_IMIS_ID, string LoginID, int Move)

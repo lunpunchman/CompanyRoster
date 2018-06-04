@@ -116,10 +116,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Asi.Web.dll</HintPath>
     </Reference>
-    <Reference Include="BA.IMIS.Common, Version=1.0.6155.20835, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\BA.IMIS.Common.dll</HintPath>
-    </Reference>
     <Reference Include="BA.iParts.CompanyRoster, Version=1.0.6145.17002, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\BA.iParts.CompanyRoster\bin\BA.iParts.CompanyRoster.dll</HintPath>
@@ -129,8 +125,8 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Secure, Version=20.1.1.4, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -201,6 +197,7 @@
     <Content Include="Site1.Master" />
     <Content Include="TestHarness.aspx" />
     <Content Include="wsCompanyRoster.asmx" />
+    <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
@@ -229,6 +226,12 @@
     <Compile Include="TestHarness.aspx.designer.cs">
       <DependentUpon>TestHarness.aspx</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\BA.IMIS.Common\BA.IMIS.Common.csproj">
+      <Project>{53c553a3-5b8f-43be-b001-b45229911417}</Project>
+      <Name>BA.IMIS.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,8 @@
+﻿CREATE PROCEDURE spba_GetRosterCount (
+	@IMIS_ID varchar(10)
+)
+AS BEGIN
+SELECT COUNT(*) AS RosterCount FROM Name WHERE CO_ID=@IMIS_ID AND COMPANY_RECORD=0
+END
+
+GRANT EXEC ON spba_GetRosterCount TO iMIS_Prod_RO

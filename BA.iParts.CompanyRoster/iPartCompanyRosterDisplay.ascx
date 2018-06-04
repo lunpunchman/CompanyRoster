@@ -79,6 +79,7 @@
     //NOTE: As of IMIS20.1, you have to use "jQuery." instead of "$." as the jQuery shortcut
 
     var empInfoTimer;
+    var retVal = false;
 
     jQuery(document).ready(function () {
         try {
@@ -88,10 +89,10 @@
                 //doc.on("click", ".btnAddContact", function () { return showInvitationModal(); });
                 doc.on("click", ".btnAddContact", function () { return showInvitationModal(); });
                 doc.on("shown.bs.modal", ".invitationModal", initModal);
-                doc.on("hidden.bs.modal", ".invitationModal", function () { return cancelModal(jQuery(".invitationModal")); });
-                doc.on("click", ".btnMangeRole", function () { return getRelationships() });
-                doc.on("click", ".btnMoveEmp", function () { return getCompanyList() });
-                doc.on("click", ".btnSavleRole", btnSaveRoleClick);
+                doc.on("hidden.bs.modal", ".invitationModal", hideModal);
+                doc.on("click", ".btnMangeRole", function () { return getRelationships(jQuery(".roleModal"), jQuery(".cblist")) });
+                doc.on("click", ".btnMoveEmp", function () { return getCompanyList(jQuery(".levelModal"), jQuery(".cblLevel")) });
+                doc.on("click", ".btnSavleRole", function () { return btnSaveRoleClick(jQuery(".cblist"), jQuery(".txtSelectedId").val(), jQuery(".txtSelectedParentId").val()) });
                 doc.on("shown.bs.modal", ".roleModal", initModal);
                 doc.on("hidden.bs.modal", ".roleModal", function () { return cancelModal(jQuery(".roleModal")); });
                 doc.on("shown.bs.modal", ".levelModal", initModal);
@@ -104,15 +105,27 @@
                 doc.on("shown.bs.modal", ".levelConfirmModal", initModal);
                 doc.on("click", ".btnCancelLevel", function () { return cancelModal(jQuery(".levelModal")); });
                 doc.on("click", ".btnCancelLevelConfirm", function () { return cancelModal(jQuery(".levelConfirmModal")); });
-
                 doc.on("shown.bs.modal", ".masterConfirmModal", initModal);
                 doc.on("hidden.bs.modal", ".masterConfirmModal", hideModal);
                 doc.on("click", ".btnDone", hideModal);
+                toggleAddButton();
             }
         }
         catch (err) { displayError(err); }
     });
 
+    function toggleAddButton() {
+        var company = jQuery.parseJSON(jQuery(".txtCompany").val());
+        if (parseInt(jQuery(".txtRosterCount").val()) >= 5 && (company.MemberType =="SHOP" || company.MemberType == "NSHOP")) {
+            jQuery(".btnAddContact").prop("disabled", true);
+            jQuery(".btnAddContact").addClass("ba-hidden");
+        }
+        else {
+            jQuery(".btnAddContact").prop("disabled", false);
+            jQuery(".btnAddContact").removeClass("ba-hidden");
+        }
+        return;
+    }
     function showAlert(msg, modal, success) {
         var alert = (modal == undefined) ? jQuery(".alert-grid") : jQuery(".alert-modal");
         jQuery(".alert").toggleClass("alert-danger", success !== true);
@@ -128,19 +141,86 @@
     }
 
     function confirmDeleteRoster($this) {
-        return confirm("Are you sure you want to delete '" +
-                        $this.closest("tr").find(".fullName").prop("innerHTML") +
-                        "' from your roster?");
+        //if (confirm("Are you sure you want to delete '" +
+        //                $this.closest("tr").find(".fullName").prop("innerHTML") +
+        //                "' from your roster?")) {
+            var isCoAdmin = false;
+            var isInvoice = false;
+            var isOwner = false;
+            var coAdminCount = 0;
+            var invoiceCount = 0;
+            var ownerCount = 0
+            
+            jQuery.ajax({
+                url: jQuery(".txtWSPath").val() + "/GetCompanyRelationships",
+                type: "POST",
+                async: false,
+                contentType: "application/json; charset=utf-8",
+                data: "{ 'IMIS_ID': '" + $this.closest("tr").find(".parentID").prop("innerHTML") + "' }",
+                success: function (result) {
+                    var json = jQuery.parseJSON(result.d);
+                    for (var i = 0; i < json.length; i++) {
+                        if (json[i].RELATION_TYPE == "_ORG-ADMIN") {
+                            coAdminCount++;
+                            if (json[i].EMPID == $this.closest("tr").find(".childIMIS_ID").prop("innerHTML")) {///////////////////////////////////////////////
+                                isCoAdmin = true;
+                            }
+                        }
+                        else if (json[i].RELATION_TYPE == "INVOICE") {
+                            invoiceCount++;
+                            if (json[i].EMPID == $this.closest("tr").find(".childIMIS_ID").prop("innerHTML")) {///////////////////////////////////////////////
+                                isInvoice = true;
+                            }
+                        }
+                        else if (json[i].RELATION_TYPE == "OWNER") {
+                            ownerCount++;
+                            if (json[i].EMPID == $this.closest("tr").find(".childIMIS_ID").prop("innerHTML")) {///////////////////////////////////////////////
+                                isOwner = true;
+                            }
+                        }
+                    }
+                    var msg = "";
+                    if ((coAdminCount == 1 && isCoAdmin)) {
+                        alert("'" + $this.closest("tr").find(".fullName").prop("innerHTML") + "' is the only Company Admin on your roster. You must assign another Company Admin before removing this employee.")
+                        retVal = false;
+                    }
+                    else if ((invoiceCount == 1 && isInvoice)) {
+                        alert("'" + $this.closest("tr").find(".fullName").prop("innerHTML") + "' is the only Invoice Contact on your roster. You must assign another Invoice Contact before removing this employee.")
+                        retVal = false;
+                    }
+                    else if ((ownerCount == 1 && isOwner)) {
+                        alert("'" + $this.closest("tr").find(".fullName").prop("innerHTML") + "' is the only Owner on your roster. You must assign another Owner before removing this employee.")
+                        retVal = false;
+                    }
+                    else {
+                        retVal = confirm("Are you sure you want to delete '" +
+                                        $this.closest("tr").find(".fullName").prop("innerHTML") +
+                                        "' from your roster?");                       
+                    }                  
+                },
+                error: function (err) {
+                    displayAjaxError(err);
+                    return false;
+                }
+            });
+            return retVal;
+        //}
+
+        //return confirm("Are you sure you want to delete '" +
+        //                $this.closest("tr").find(".fullName").prop("innerHTML") +
+        //                "' from your roster?");
     }
 
     function showLevelConfirmModal() {
         try {
             // var result = getRelationships(selectedId);
-
-            jQuery(".modal-content").removeClass("ba-hidden");
-            var modal = jQuery(".levelConfirmModal");
-            modal.appendTo("body").modal("show"); //only for IE11 to work properly in iMIS
-            modal.css("overflow-y", "hidden"); //only for IE11 to work properly in iMIS
+            if (!(jQuery(".txtNewParentId").val() == "" || jQuery(".txtNewParentId").val() == jQuery(".txtSelectedParentId").val())) {
+                getRelationships(jQuery(".levelConfirmModal"), jQuery(".cbConfirmList"));
+                jQuery(".modal-content").removeClass("ba-hidden");
+                var modal = jQuery(".levelConfirmModal");
+                modal.appendTo("body").modal("show"); //only for IE11 to work properly in iMIS
+                modal.css("overflow-y", "hidden"); //only for IE11 to work properly in iMIS
+            }
         }
         catch (err) { displayError(err); }
     }
@@ -159,6 +239,7 @@
             modal.modal("hide"); //only for IE11 to work properly in iMIS
             jQuery(".divRStatus").html("");
             jQuery(".cblist").empty();
+            jQuery(".cbConfirmList").empty();
             if (modal.selector != ".levelConfirmModal")
                 jQuery(".cblLevel").empty();
         }
@@ -183,6 +264,7 @@
                         contentType: "application/json; charset=utf-8",
                         data: "{ 'IMIS_ID': '" + IMIS_ID + "' }",
                         success: function (result) {
+                            var counts = jQuery.parseJSON(result.d);
                             showEmployeeInfo(e, result, fullNameCell, IMIS_ID);
                         },
                         error: function (err) {
@@ -195,7 +277,7 @@
         catch (err) { displayError(err); }
     }
 
-    function getRelationships() {
+    function getRelationships(modal, container) {
         try {
             if (hasRowsSelected()) {
                 //var treeList = $find(jQuery(".rtlRoster")[0].id);
@@ -225,7 +307,7 @@
                     success: function (result) {
                         //alert("Got Relaiontships");
                         resultData = JSON.parse(result.d);
-                        showRelationshipInfo(resultData);
+                        showRelationshipInfo(resultData, modal, container);
                         //return result;
                     },
                     error: function (err) {
@@ -260,15 +342,15 @@
     }
 
 
-    function btnSaveRoleClick() {
+    function btnSaveRoleClick(container, targetId, parentId) {
         try {
-            var company = jQuery.parseJSON(jQuery(".txtCompany").val());
-            var container = jQuery(".cblist");
+            //var company = jQuery.parseJSON(jQuery(".txtCompany").val());
+            //var container = jQuery(".cblist");
             var values = jQuery('input:checkbox:checked.chkRoles').map(function () {
                 return this.id;
             }).get();
             var relationships = JSON.stringify(values);
-            var dataJson = { IMIS_ID: jQuery(".txtSelectedId").val(), CO_IMIS_ID: jQuery(".txtSelectedParentId").val(), Relationships: values, LoginID: jQuery(".txtLoginID").val() }
+            var dataJson = { IMIS_ID: targetId, CO_IMIS_ID: parentId, Relationships: values, LoginID: jQuery(".txtLoginID").val() }
             var dataJsonString = JSON.stringify(dataJson);
             jQuery.ajax({
                 url: jQuery(".txtWSPath").val() + "/SaveRelationshipInfo",
@@ -288,15 +370,15 @@
         //alert("Return World");
         return false;
     }
-    function showRelationshipInfo(relationships) {
+    function showRelationshipInfo(relationships, roleModal, container) {
         try {
-            var roleModal = jQuery(".roleModal");
-            var container = jQuery(".cblist");
+            //var roleModal = jQuery(".roleModal");
+            //var container = jQuery(".cblist");
             for (var i = 0; i < relationships.length; i++) {
                 var cbox = '<input type=checkbox id="' + relationships[i].RELATION_TYPE + '" class="chkRoles" value="' + relationships[i].DESCRIPTION + '" ' + convertToChecked(relationships[i].IsRole) + '> ' + relationships[i].DESCRIPTION + '<br>';
                 jQuery(cbox).appendTo(container);
             }
-            showRoleModal();
+            showModal(roleModal);
         }
         catch (err) { displayError(err); }
     }
@@ -620,10 +702,10 @@
         }
     }
 
-    function getCompanyList() {
+    function getCompanyList(modal, container) {
         try {
-            var roleModal = jQuery(".levelModal");
-            var container = jQuery(".cblLevel");
+            //var roleModal = jQuery(".levelModal");
+            //var container = jQuery(".cblLevel");
 
             var treeList = $find(jQuery(".rtlRoster")[0].id)
             treeList = treeList.get_dataItems();
@@ -666,6 +748,7 @@
                 contentType: "application/json; charset=utf-8",
                 data: dataJsonString,
                 success: function (result) {
+                    btnSaveRoleClick(jQuery(".cbConfirmList"), jQuery(".txtSelectedId").val(), jQuery(".txtNewParentId").val());
                     jQuery(".divConfirmStatus").html(jQuery.parseJSON(result.d));
                     cancelModal(jQuery(".levelModal"));
                     cancelModal(jQuery(".levelConfirmModal"));
@@ -702,7 +785,7 @@
             <telerik:RadTreeList runat="server" ID="rtlRoster" CssClass="rtlRoster" DataKeyNames="ItemID" ParentDataKeyNames="ParentID" AutoGenerateColumns="false"
                 OnNeedDataSource="rtlRoster_NeedDataSource" OnUpdateCommand="rtlRoster_UpdateCommand" OnEditCommand="rtlRoster_EditCommand"
                 OnDeleteCommand="rtlRoster_DeleteCommand" OnItemDataBound="rtlRoster_ItemDataBound" OnLoad="rtlRoster_Load" ClientSettings-ClientEvents-OnItemSelected="OnItemSelected" ClientSettings-ClientEvents-OnItemDeselected="OnItemDeselected"
-                AllowPaging="true" PageSize="15" AllowSorting="true" AllowMultiItemEdit="true" EditMode="InPlace" ClientSettings-Selecting-AllowItemSelection="true">
+                AllowPaging="false" PageSize="30" AllowSorting="true" AllowMultiItemEdit="true" EditMode="InPlace" ClientSettings-Selecting-AllowItemSelection="true" ClientSettings-Scrolling-AllowScroll="true" ClientSettings-Scrolling-UseStaticHeaders="true">
                 <Columns>
                     <telerik:TreeListSelectColumn HeaderStyle-Width="40px" ItemStyle-CssClass="chkSelect" UniqueName="chkSelect">
                     </telerik:TreeListSelectColumn>
@@ -714,13 +797,16 @@
                         <HeaderStyle Width="200px" />
                     </telerik:TreeListBoundColumn>
                     <telerik:TreeListBoundColumn DataField="ChildIMIS_ID"  ItemStyle-CssClass="IMIS_ID" HeaderText="Member Number" UniqueName="IMIS_ID" ReadOnly="true">
+                        <HeaderStyle Width="200px" />
                     </telerik:TreeListBoundColumn>
 <%--                    <telerik:TreeListBoundColumn DataField="MemberType" HeaderText="Member Type" UniqueName="MemberType" ReadOnly="true">
                     </telerik:TreeListBoundColumn>--%>
                     <telerik:TreeListBoundColumn DataField="Email" HeaderText="Email" UniqueName="Email" ReadOnly="true">
+                        <HeaderStyle Width="200px" />
                     </telerik:TreeListBoundColumn>
                     <telerik:TreeListCheckBoxColumn DataField="OptOutTNB" HeaderText="TNB Opt Out" UniqueName="OptOutTNB"
                         HeaderTooltip="Opt out of The New Brewer publication" ReadOnly="false">
+                        <HeaderStyle Width="100px" />
                     </telerik:TreeListCheckBoxColumn>
                     <telerik:TreeListEditCommandColumn UniqueName="TNBEditor" ShowAddButton="false" EditText="Edit" HeaderText="Edit TNB Opt Out">
                     </telerik:TreeListEditCommandColumn> 
@@ -736,6 +822,7 @@
                     <telerik:TreeListBoundColumn DataField="ChildIMIS_ID"  ItemStyle-CssClass="childIMIS_ID" HeaderText="ID" UniqueName="ChildIMIS_ID" ReadOnly="true" HeaderStyle-Width="0">
                         <HeaderStyle Width="0px" />
                     </telerik:TreeListBoundColumn>
+
                 </Columns>
             </telerik:RadTreeList>
         </telerik:RadAjaxPanel>
@@ -770,8 +857,8 @@
         <!--We have to use a RadAjaxManagerProxy because there is already a RadAjaxManager on the iMIS MasterPage and there can only be one RadAjaxManager on a page.-->
         <div id="divInvitationGrid" class="divInvitationGrid">
             <h5>Pending Invitations</h5>
-            <telerik:RadGrid runat="server" ID="grdInvitations" CssClass="grdInvitations" AllowPaging="True" PageSize="15" 
-                AllowSorting="true" OnNeedDataSource="grdInvitations_NeedDataSource" OnPreRender="grdInvitations_PreRender" OnItemDataBound="grdInvitations_ItemDataBound">
+            <telerik:RadGrid runat="server" ID="grdInvitations" CssClass="grdInvitations" AllowPaging="true" PageSize="15" 
+                AllowSorting="true" OnNeedDataSource="grdInvitations_NeedDataSource" OnPreRender="grdInvitations_PreRender" OnItemDataBound="grdInvitations_ItemDataBound" >
                 <MasterTableView>
                     <Columns>
                         <telerik:GridTemplateColumn UniqueName="TemplateColumn" HeaderText="Delete">
@@ -931,12 +1018,17 @@
             <div class="modal-content">
                 <div class="modal-body role-modal-body">
                     <div class="well">
-                        <p>Before we move this employee let us know if you want to tranfer his or her roles to the new location or remove them.</p>
+                        <p>These roles will be transferred to the new location. You may make any necessary edits before we move the employee.</p>
+                            <div id="cbConfirmList" class="cbConfirmList">
+
+                            </div>
+                        <br />
                         <div class="row">
                             <div class="col-lg-12"> 
-                                <asp:Button ID="btnMoveRelationships" CssClass="btnMoveRelationships TextButton TextButtonWithImage" OnClientClick="return false;" Text="Move Roles" runat="server" />
-                                <asp:Button ID="btnDeleteRelationships" CssClass="btnDeleteRelationships TextButton TextButtonWithImage" OnClientClick="return false;" Text="Remove Roles" runat="server" />
+                                <asp:Button ID="btnMoveRelationships" CssClass="btnMoveRelationships TextButton TextButtonWithImage" OnClientClick="return false;" Text="Move Roles As Shown" runat="server" />
+                                <asp:Button ID="btnDeleteRelationships" CssClass="btnDeleteRelationships ba-hidden TextButton TextButtonWithImage" OnClientClick="return false;" Text="Remove Roles" runat="server" />
                                 <asp:Button ID="btnCancelLevelConfirm" CssClass="btnCancelLevelConfirm TextButton TextButtonWithImage" OnClientClick="return false;" Text="Cancel" runat="server" />
+                                
                             </div>
                         </div>
                         <div id="divLCStatus" class="divLCStatus full-width" runat="server"></div>
@@ -963,6 +1055,7 @@
             </div>
         </div>
     </div>
+
 <asp:TextBox ID="txtWSPath" CssClass="txtWSPath ba-hidden" runat="server"></asp:TextBox>
 <asp:TextBox ID="txtCompany" CssClass="txtCompany ba-hidden" runat="server"></asp:TextBox>
 <asp:TextBox ID="txtLoginID" CssClass="txtLoginID ba-hidden" runat="server"></asp:TextBox>
@@ -973,3 +1066,4 @@
 <asp:TextBox ID="txtSelectedParentId" CssClass="txtSelectedParentId ba-hidden" runat="server"></asp:TextBox>
 <asp:TextBox ID="txtNewParentId" CssClass="txtNewParentId ba-hidden" runat="server"></asp:TextBox>
 <asp:TextBox ID="txtIsCompany" CssClass="txtIsCompany ba-hidden" runat="server"></asp:TextBox>
+<asp:TextBox ID="txtRosterCount" CssClass="txtRosterCount ba-hidden" runat="server"></asp:TextBox>

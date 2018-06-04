@@ -86,16 +86,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Asi.Web.dll</HintPath>
     </Reference>
-    <Reference Include="BA.IMIS.Common, Version=1.0.6155.20835, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\BA.IMIS.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\..\..\bin\log4net.dll</HintPath>
+      <HintPath>..\..\PayInvoices\BA.iParts.PayInvoices\bin\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Secure">
       <HintPath>..\..\..\..\bin\Secure.dll</HintPath>
@@ -156,11 +153,23 @@
     <Content Include="iPartCompanyRosterConfigEdit.ascx" />
     <Content Include="iPartCompanyRosterHelp.htm" />
     <Content Include="Deploy_iPart.bat" />
+    <Content Include="SQL\spba_DeleteFromRoster.sql" />
+    <Content Include="SQL\spba_GetCompanyRelationships.sql" />
+    <Content Include="SQL\spba_GetParentCompany.sql" />
+    <Content Include="SQL\spba_GetRosterCount.sql" />
+    <Content Include="SQL\spba_GetCompanyRoster.sql" />
+    <Content Include="SQL\spba_UpdateRosterRelationships.sql" />
+    <Content Include="SQL\spba_GetRosterRelationships.sql" />
+    <Content Include="SQL\spba_MoveEmployee.sql" />
+    <Content Include="SQL\spba_GetRelationshipCount.sql" />
+    <Content Include="SQL\spba_GetCompanyRosterInvitees.sql" />
     <Content Include="wsCompanyRoster.asmx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\CompanyRoster.cs" />
     <Compile Include="Classes\Employee.cs" />
+    <Compile Include="Classes\Relationship.cs" />
+    <Compile Include="Classes\RelationshipCount.cs" />
     <Compile Include="Classes\EmployeeInfo.cs" />
     <Compile Include="Classes\InvalidEmail.cs" />
     <Compile Include="iPartCompanyRosterCommon.cs" />
@@ -186,6 +195,25 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\BA.IMIS.Common\BA.IMIS.Common.csproj">
+      <Project>{53c553a3-5b8f-43be-b001-b45229911417}</Project>
+      <Name>BA.IMIS.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="web.config" />
+    <Content Include="packages.config" />
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.DebugWithoutIPartBuild.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
