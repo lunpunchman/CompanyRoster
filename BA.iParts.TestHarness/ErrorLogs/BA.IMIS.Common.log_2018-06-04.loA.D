@@ -1,0 +1,11 @@
+2018-06-04 17:32:03,756={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:21:47,546={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:28:26,048={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:28:28,881={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:31:32,489={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:32:36,842={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:33:12,548={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:33:15,403={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:33:20,225={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:33:39,512={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World
+2018-06-04 20:33:42,449={ABSOLUTE} [BA.IMIS.Common.Shared] ERROR - System.Exception: Hello World

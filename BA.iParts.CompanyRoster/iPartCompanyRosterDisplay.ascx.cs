@@ -152,7 +152,7 @@ namespace BA.iParts.CompanyRoster
 
 
                 //}
-                company = Shared.GetParentCompany(AppContext.CurrentIdentity.LoginIdentity);
+                company = SQL.GetParentCompany(AppContext.CurrentIdentity.LoginIdentity);
                 company.Email = "info@brewersassociation.org"; //This is a lame shortcut in naming. We're always sending the email FROM info@brewersassociation.org instead of the company itself
                 ((TextBox)FindControl("txtRosterCount")).Text = CompanyRosterShared.GetRosterCount(company.IMIS_ID);
                 ((TextBox)FindControl("txtLoginID")).Text = AppContext.CurrentIdentity.LoginUserId;

@@ -258,6 +258,7 @@ namespace BA.iParts.CompanyRoster
                     int childCompanyID = 0;
                     int parentIMIS_ID = 0;
                     int HQ_IMIS_ID = Convert.ToInt32(company.IMIS_ID);
+                    //string HQ_IMIS_ID = company.IMIS_ID;
                     int intChildIMIS_ID = -1;
                     string empIMIS_ID = null;
                     string memberType = String.Empty;
@@ -267,7 +268,7 @@ namespace BA.iParts.CompanyRoster
                     DataTable results = GetCompanyRoster(company.IMIS_ID);
                     List<int> childCompanyIDs = new List<int>();
                     //Add top-most parent company tree node here
-                    employees.Add(new Employee(null, HQ_IMIS_ID, HQ_IMIS_ID.ToString(), company.Name.ToBold(), String.Empty, company.MemberType, false, true));
+                    employees.Add(new Employee(null, HQ_IMIS_ID, company.IMIS_ID, company.Name.ToBold(), String.Empty, company.MemberType, false, true));
                     //Loop through the IQA results and assign to various tree nodes
                     foreach (DataRow row in results.Rows)
                     {
@@ -280,7 +281,7 @@ namespace BA.iParts.CompanyRoster
                             childCompanyIDs.Add(childCompanyID);
                             employees.Add(
                                 new Employee(null, childCompanyID,
-                                    childCompanyID.ToString(),
+                                    row["IMIS_ID"].ToString(),
                                     row["Company"].ToString().ToBold(),
                                     row["Email"].ToString(),
                                     row["ParentMemberType"].ToString(),

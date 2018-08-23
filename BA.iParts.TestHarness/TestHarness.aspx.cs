@@ -60,8 +60,8 @@ namespace BA.iParts.TestHarness
             //TODO: Pass your IMIS_ID to GetParentCompany. Do not pass the HQ IMIS_ID because you are supposed to be an EMP that is a Company Admin.
             //company = Shared.GetParentCompany("900128128"); //Mashed
             //company = Shared.GetParentCompany("000185299"); //Mashed Gabej
-            company = SQL.GetParentCompany("900198647"); //BikeBun
-            ((TextBox)GetControl(Page, "txtRosterCount")).Text = CompanyRosterShared.GetRosterCount("900045200");
+            company = SQL.GetParentCompany("000053459 "); //BikeBun
+            ((TextBox)GetControl(Page, "txtRosterCount")).Text = CompanyRosterShared.GetRosterCount("000134693");
             //company = SQL.GetParentCompany("900203419"); //DESIHALL/brewer for Shop type
             //((TextBox)GetControl(Page, "txtRosterCount")).Text = CompanyRosterShared.GetRosterCount("900204077");
             //company = Shared.GetParentCompany("900097963"); //Mashtun
